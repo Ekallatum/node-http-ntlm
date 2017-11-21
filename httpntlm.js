@@ -22,11 +22,6 @@ exports.method = function(method, options, finalCallback){
 	// extract non-ntlm-options:
 	var httpreqOptions = _.omit(options, 'url', 'username', 'password', 'workstation', 'domain');
 
-	// extract options specified in omitOptions and omitOptions it-self
-	if (!!options.omitOptions) {
-		_.omit(httpreqOptions, 'omitOptions', options.omitOptions);
-	}
-
 	// is https?
 	var isHttps = false;
 	var reqUrl = url.parse(options.url);
@@ -42,7 +37,6 @@ exports.method = function(method, options, finalCallback){
 	}
 
 	// build type1 request:
-
 	function sendType1Message (callback) {
 		var type1msg = ntlm.createType1Message(options);
 
@@ -58,6 +52,11 @@ exports.method = function(method, options, finalCallback){
 
 		// pass along other options:
 		type1options = _.extend({}, _.omit(httpreqOptions, 'headers', 'body'), type1options);
+
+    // extract options specified in omitOptions and omitOptions it-self
+    if (!!options.omitOptions) {
+      type1options = _.omit(type1options, 'omitOptions', options.omitOptions);
+    }
 
 		// send type1 message to server:
 		httpreq.get(options.url, type1options, callback);
