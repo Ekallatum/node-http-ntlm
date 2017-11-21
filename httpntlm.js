@@ -22,6 +22,11 @@ exports.method = function(method, options, finalCallback){
 	// extract non-ntlm-options:
 	var httpreqOptions = _.omit(options, 'url', 'username', 'password', 'workstation', 'domain');
 
+	// extract options specified in omitOptions and omitOptions it-self
+	if (!!options.omitOptions) {
+		_.omit(httpreqOptions, 'omitOptions', options.omitOptions);
+	}
+
 	// is https?
 	var isHttps = false;
 	var reqUrl = url.parse(options.url);
